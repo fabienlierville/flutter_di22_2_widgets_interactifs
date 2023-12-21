@@ -25,6 +25,12 @@ class _HomePageState extends State<HomePage> {
   Icon iconRadio = Icon(Icons.airplanemode_active);
   //Switch
   bool interrupteur = false;
+  //Slider
+  double sliderValue = 110.65;
+  //DatePicker
+  DateTime? datePublication;
+  // TimePicker
+  TimeOfDay? heurePublication;
 
   @override
   void initState() {
@@ -150,7 +156,35 @@ class _HomePageState extends State<HomePage> {
                       });
                     }
                 ),
-                Text(interrupteur?"Pour":"Contre")
+                Text(interrupteur?"Pour":"Contre"),
+                Divider(),
+                Slider(
+                    value: sliderValue,
+                    min: 100,
+                    max: 250,
+                    inactiveColor: Colors.black54,
+                    activeColor: Colors.pink,
+                    divisions: 5,
+                    label: "${sliderValue.toStringAsFixed(2)}",
+                    onChanged: (double value){
+                      setState(() {
+                        sliderValue = value;
+                      });
+                    }
+                ),
+                Text("Valeur du Slider : ${sliderValue}"),
+                Divider(),
+                ElevatedButton(
+                    onPressed: selectionDate,
+                    child: Text("Choisir une date")
+                ),
+                Text((datePublication == null) ? "Aucune Date" : "${datePublication!.day}/${datePublication!.month}/${datePublication!.year}"),
+                Divider(),
+                ElevatedButton(
+                    onPressed: selectionHeure,
+                    child: Text("Choisir une Heure")
+                ),
+                Text((heurePublication == null) ? "Aucune Heure" : "${heurePublication!.hour}:${heurePublication!.minute}"),
               ],
             ),
           ),
@@ -180,6 +214,38 @@ class _HomePageState extends State<HomePage> {
     });
 
     return l;
+  }
+
+  Future<void> selectionDate() async{
+    DateTime? datechoisie = await showDatePicker(
+        context: context,
+        firstDate: DateTime(1990),
+        lastDate: DateTime(2026),
+        initialDate: DateTime.now(),
+      initialDatePickerMode: DatePickerMode.year,
+      locale: Locale('fr', 'FR')
+    );
+
+    if(datechoisie != null){
+      setState(() {
+        datePublication = datechoisie;
+      });
+    }
+  }
+
+
+  Future<void> selectionHeure() async{
+    TimeOfDay? heureChoisie = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+    );
+
+    if(heureChoisie != null){
+      setState(() {
+        heurePublication = heureChoisie;
+      });
+    }
+
   }
 }
 
